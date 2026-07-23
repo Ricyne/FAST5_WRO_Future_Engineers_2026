@@ -3,7 +3,7 @@
 
 # WRO Future Engineers - Robotics Project Documentation
 
-## Team 
+## Our Team 
 ![Team Photo](t-photos/Team_photo.png)
 
 Fast 5 is a team of two students from Kid Engineer Organization, also known as Thay Phong STEM, competing in the WRO Future Engineers category. This repository documents our full engineering process for design, components, testing, and code for our self-driving car. 
