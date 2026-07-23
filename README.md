@@ -437,9 +437,13 @@ repo-root
 
 ---
 
-## 7. 3D Model Files
+## 7. 3D Model Files (SLDPRT)
 
-**Status: placeholder — to be completed.**
+We used SLDPRT to design the 3D models to finish the robot.
+
+- [**Ultrasonic sensor adapter**](Ultra_adapter.SLDPRT) 
+- [**Cam Holder**](cam_holder.SLDPRT)
+
 
 <p align="right"><a href="#top">Back To Top</a></p>
 
