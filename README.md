@@ -68,7 +68,7 @@ The current build is our **second full revision (v2)** — see §2.3 for what ch
     <td align="center"><b>Right View</b><br><img src="/Robot/Images/ver2/right_view.png" width="200"></td>
   </tr>
   <tr>
-    <td align="center"><b>Back View</b><br><img src="/Robot/Images/ver2/back_view.png" width="200"></td>
+    <td align="center"><b>Back View</b><br><img src="/v-photos/Back.jpg" width="200"></td>
     <td align="center"><b>Top View</b><br><img src="/Robot/Images/ver2/top_view.png" width="200"></td>
     <td align="center"><b>Bottom View</b><br><img src="/Robot/Images/ver2/bottom_view.png" width="200"></td>
   </tr>
