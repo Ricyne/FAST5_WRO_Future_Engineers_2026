@@ -91,7 +91,7 @@ The current build is our **second full revision (v2)** — see §2.3 for what ch
 
 ### 2.1 Drive System
 
-**Motor: Technic™ Powered Up Large Motor** (drives the rear differential)
+**Motor: LEGO® Technic™ Large Angular Motor** (drives the rear differential)
 
 <table>
   <tr>
@@ -127,7 +127,7 @@ The Large Motor's torque is adequate for the flat competition surface but is a l
 
 ### 2.2 Steering
 
-**Motor: Technic™ Powered Up XL Motor + 1:1 gearbox**
+**Motor: LEGO® Technic™ Large Angular Motor + 1:1 gearbox**
 
 <table>
   <tr>
