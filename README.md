@@ -6,8 +6,8 @@
 ## Team Members
 | Photo | Member | Role |
 |---|---|---|
-| ![Luu Duc Trung](t-photos/Luu_Duc_Trung) | **Luu Duc Trung** |  Lead mechanical builder - brings prior WRO experience (WRO 2024, 2025) and designed/assembled the robot |
-| ![Truong Dinh Bach](t-photos/Truong_Dinh_Bach.png) | **Truong Dinh Bach** |  Responsible for documenting the team's development process and photography |
+| ![Luu Duc Trung](t-photos/Luu_Duc_Trung.jpg) | **Luu Duc Trung** |  Lead mechanical builder - brings prior WRO experience (WRO 2024, 2025) and designed/assembled the robot |
+| ![Truong Dinh Bach](t-photos/Truong_Dinh_Bach.jpg) | **Truong Dinh Bach** |  Responsible for documenting the team's development process and photography |
 
 ![Team Photo](t-photo/Team_photo.png)
 
