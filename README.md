@@ -63,14 +63,14 @@ The current build is our **second full revision (v2)** — see §2.3 for what ch
 
 <table>
   <tr>
-    <td align="center"><b>Front View</b><br><img src="/Robot/Images/ver2/front_view.png" width="200"></td>
-    <td align="center"><b>Left View</b><br><img src="/Robot/Images/ver2/left_view.png" width="200"></td>
-    <td align="center"><b>Right View</b><br><img src="/Robot/Images/ver2/right_view.png" width="200"></td>
+    <td align="center"><b>Front View</b><br><img src="/v-photos/Front.jpg" width="200"></td>
+    <td align="center"><b>Left View</b><br><img src="/v-photos/Left.jpg" width="200"></td>
+    <td align="center"><b>Right View</b><br><img src="/v-photos/Right.jpg" width="200"></td>
   </tr>
   <tr>
     <td align="center"><b>Back View</b><br><img src="/v-photos/Back.jpg" width="200"></td>
-    <td align="center"><b>Top View</b><br><img src="/Robot/Images/ver2/top_view.png" width="200"></td>
-    <td align="center"><b>Bottom View</b><br><img src="/Robot/Images/ver2/bottom_view.png" width="200"></td>
+    <td align="center"><b>Top View</b><br><img src="/v-photos/Top.jpg" width="200"></td>
+    <td align="center"><b>Bottom View</b><br><img src="/v-photos/Under.jpg" width="200"></td>
   </tr>
 </table>
 
