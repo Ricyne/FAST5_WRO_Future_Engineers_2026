@@ -412,8 +412,6 @@ repo-root
 |---|---|---|
 | LEGO® Education SPIKE™ Prime Hub | 1 | LEGO Education |
 | SPIKE Prime rechargeable Hub battery | 1 | [LEGO Education 45610](https://education.lego.com/en-us/products/lego-technic-large-hub-battery/45610/) |
-| Technic™ Powered Up Large Motor (drive) | 1 | [LEGO 88013](https://www.lego.com/en-us/product/technic-large-motor-88013) |
-| Technic™ Powered Up XL Motor + 3:1 gearbox (steering) | 1 | [LEGO 88014](https://www.lego.com/en-at/product/technic-xl-motor-88014) |
 | Technic™ Powered Up Large Motor (drive + steering) | 2 | [LEGO 88013](https://education.lego.com/en-us/products/lego-technic-large-angular-motor/45602/) |
 | LEGO differential gear | 1 | LEGO Technic |
 | 62.3 mm Technic tires (rear) | 2 | LEGO Technic |
@@ -421,7 +419,6 @@ repo-root
 | Matrix Robotics M-Vision Cam + Type-C cable pack | 1 | Matrix Robotics |
 | LEGO® Technic™ Distance Sensor (ultrasonic) | 2 | [LEGO Education 45604](https://education.lego.com/en-us/products/lego-technic-distance-sensor/45604/) |
 | LEGO® Technic™ Color Sensor | 1 | [LEGO Education 45605](https://education.lego.com/en-us/products/lego-technic-color-sensor/45605/) |
-| Custom 3D-printed PLA parts (Ackermann linkage, mounts, brackets) | Various | 3D-printed in-house |
 | Custom 3D-printed PLA parts (mounts, brackets) | Various | 3D-printed in-house |
 | LEGO Technic structural elements | Various | LEGO Technic |
 
@@ -461,5 +458,4 @@ Send build photos or notes and this will be turned into a numbered, judge-readab
 
 ---
 
-*Sources: team README, robot configuration notes, `FE_Functions.py`, and official LEGO Education / LEGO.com technical specification pages linked above.*
 *Sources: team README, robot configuration notes, `FE_Functions.py`, and official LEGO Education / LEGO.com technical specification pages linked above.*
