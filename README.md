@@ -198,7 +198,7 @@ The chassis is built from **LEGO Technic**, supplemented with **custom 3D-printe
   </tr>
 </table>
 
-The battery powers the SPIKE Prime Hub directly; the Hub in turn supplies all motors and sensors over their LPF2 leads, and the M-Vision Cam over its dedicated 5V cable — no separate step-up/step-down conversion is needed anywhere in the system, since the camera's 5V input matches the Hub's output.
+The battery powers the SPIKE Prime Hub directly; the Hub in turn supplies all motors and sensors over their LPF2 leads, and the M-Vision Cam over its dedicated 5V cable - no separate step-up/step-down conversion is needed anywhere in the system, since the camera's 5V input matches the Hub's output.
 
 Our firmware reads `hub.battery.voltage()`, clamps it to the 6,900–8,300 mV working range, and converts it to a 0–100% estimate so we can catch a low-charge robot before a run.
 
@@ -246,7 +246,7 @@ Because everything runs off one Hub battery with no separate motor supply, our p
   </tr>
 </table>
 
-**Tasks:** one sensor on each side reads distance to the left/right walls. At the start of a run this tells the robot whether the course is Clockwise or Counterclockwise (by checking which side has a wall); during a run it feeds `Ultra_err()`/`Ultra_steer()` to hold a consistent stand-off from the wall and correct heading error.
+**Tasks:** one sensor on each side reads distance to the left/right walls. At the start of a run, this tells the robot whether the course is Clockwise or Counterclockwise (by checking which side has a wall); during a run, it feeds `Ultra_err()`/`Ultra_steer()` to hold a consistent stand-off from the wall and correct heading error.
 
 **Ground sensing: LEGO® Technic™ Color Sensor**
 
@@ -380,12 +380,14 @@ After completing 3 laps, the robot aligns to the wall using the same wall-follow
 
 ```txt
 repo-root
-├─ Chassis, Motor and Processing Unit/   → hardware diagrams & images
-├─ Programming/                          → programs + illustrations
-│  ├─ FE_Functions.py                    → hub setup, motor/sensor helper functions
-│  └─ MXLineT_Lib/                       → camera / line-tracker interface (OpenMV side)
-├─ Robot/                                → robot photos (v1 & v2, all views)
-└─ Team/                                 → team photos
+└─ src
+   ├─ Camera
+   │  ├─ LPF2.py            # External library (depends on libcamera)
+   │  ├─ main.py
+   ├─ Controller       
+   │  ├─ FE_Functions.py 
+   │  ├─ FE_Portview.py               
+   │  ├─ FE_RUN.py          # Executable for both open and obstacle challenges         
 ```
 
 **Key function groups in `FE_Functions.py`:**
