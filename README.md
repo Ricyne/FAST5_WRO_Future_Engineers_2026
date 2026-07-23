@@ -159,13 +159,13 @@ Small diameter for agility and quick direction changes at the steered wheels.
 
 **Considerations**
 
-Even with the 3:1 gearbox, torque at the steering linkage was tighter than expected after the first v2 build - a candidate area to revisit (e.g. a different gear ratio or linkage geometry) if we find the robot under-steering at speed.
+Even with the 1:1 gearbox, torque at the steering linkage was tighter than expected after the first v2 build - a candidate area to revisit (e.g. a different gear ratio or linkage geometry) if we find the robot under-steering at speed.
 
 ### 2.3 Chassis Design
 
 **Design Overview**
 
-The chassis is built from **LEGO Technic**, supplemented with **custom 3D-printed PLA parts** wherever no suitable LEGO piece exists - most notably the Ackermann steering linkage. LEGO was our starting material because the team (particularly Lam) has multiple prior seasons of hands-on build experience with it; 3D printing filled the remaining gaps and gave us full freedom over part geometry.
+The chassis is built from **LEGO Technic**, supplemented with **custom 3D-printed PLA parts** wherever no suitable LEGO piece exists - most notably the Ultrasonic sensor Adapter. LEGO was our starting material because the team (particularly Trung) has multiple prior seasons of hands-on build experience with it; 3D printing filled the remaining gaps and gave us full freedom over part geometry.
 
 **v1 → v2 changes**
 
