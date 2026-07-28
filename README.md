@@ -43,8 +43,6 @@ Fast 5 is a team of two students from Kid Engineer Organization, also known as T
 - [7. 3D Model Files](#7-3d-model-files)
 - [8. Building Instructions](#8-building-instructions)
 
-> **Note on sections 7 and 8:** these are laid out with the same structure the team will use once full CAD/photo detail is ready — send the model files and assembly photos and they'll be completed.
-
 ---
 
 ## 1. Overview
@@ -164,6 +162,8 @@ Even with the 1:1 gearbox, torque at the steering linkage was tighter than expec
 ### 2.3 Chassis Design
 
 **Design Overview**
+
+![Chassis Design](models/Chassis_Design.png)
 
 The chassis is built from **LEGO Technic**, supplemented with **custom 3D-printed PLA parts** wherever no suitable LEGO piece exists - most notably the Ultrasonic sensor Adapter. LEGO was our starting material because the team (particularly Trung) has multiple prior seasons of hands-on build experience with it; 3D printing filled the remaining gaps and gave us full freedom over part geometry.
 
@@ -352,13 +352,19 @@ while abs(Drive.angle()) < 2000:
 
 ### 4.2 Obstacle Challenge
 
-**Block detection:** the camera looks for pixel regions matching pre-tuned thresholds for black, red, green, and magenta. Adjacent matching pixels are grouped into a bounding-box "blob"; a minimum-area threshold filters out noise, and a density check (`b.density()`) discards blobs where the matched color isn't dense enough to be a real sign.
+Sign avoidance runs as a four-state routine on the Hub, layered on the same wall-following and corner-counting loop as the Open Challenge (`Ultra_err()` for wall stand-off, `Steer_err()` for the corner-count-based turn target). Each cycle the camera reports an x/y position and color for the nearest sign, plus the percentage of black track surface in view; the state machine below decides what to do with that reading.
 
-**When a sign is visible:** a **PD controller** steers the robot to line up directly with the red/green blob. Distance is estimated from the blob's pixel width in-frame:
-- Width > 60 px → sign is close → begin the fixed avoidance maneuver.
-- Width > 90 px → sign is very close → back up a few centimeters first, then execute the maneuver.
+**Scanning:** with no sign in view, the robot drives the same baseline heading as the Open Challenge, just with a wider 90° corner cut (`Steer_err(90)` vs. `Steer_err(75)`) to leave more room to spot and clear signs. The moment a sign appears, it switches to tracking it.
 
-**Once all signs are passed:** a box on the left of the frame targets 70% black fill against the wall; the *difference* from that 70% target drives a **PID** correction so the robot tracks close and parallel to the wall. A center box watches for the blue boundary line to trigger the next turn, timed to leave room for course correction before the next sign. Because magenta parking-lot walls can wash out the black wall-detection box, magenta pixels are also counted toward the "wall" rectangle so the robot doesn't cut into the parking lot.
+**Approaching:** the robot steers straight at the sign using its camera x-offset from center, holding the last good heading if the camera briefly loses it. Once the sign fills enough of the frame (`y >= 100`), the robot commits to the avoidance swing.
+
+**Avoiding:** the target heading swings about 60° off the approach line, the side set by the sign's color, matching the red-right / green-left rule, clamped to within 85° of the current baseline heading so it can't over-rotate. It holds that swing until the track surface reappears (`black` fill above 60%), or gives up and returns to Scanning if 250 encoder-degrees pass without finding it.
+
+**Settling:** for a short window after clearing a sign, until `black` fill passes 70% or 200 more encoder-degrees pass, the robot ignores new sign readings, so it doesn't immediately re-trigger on the one it just passed.
+
+Drive power is also capped lower than the Open Challenge (30–50% vs. 70–100%), and steering runs through `SteerObs()`, a gentler, ±40°-clamped controller — instead of `Steer()`, trading speed for the precision needed to line up on each sign.
+
+*(This section previously described a per-frame PD/blob-width design; it's been rewritten to match the state-machine approach now in `main_obstacle()`.)*
 
 ### 4.3 Parallel Parking
 
@@ -394,14 +400,25 @@ repo-root
 
 | Group | Functions | Role |
 |---|---|---|
-| Utility | `NumberLimit_Clamp`, `Enc_cal` | Clamp a value to a safe range; convert cm → motor degrees |
+| Utility | `NumberLimit_Clamp()`, `Enc_cal()`, `dist_cal()` | Clamp a value to a safe range; convert cm → motor degrees and back |
 | Power | `Battery()` | Reads Hub voltage, clamps 6,900–8,300 mV, returns battery % |
 | Color / laps | `Color_read()`, `Color_line_count()` | Classify raw RGB as a line color; count line crossings for laps |
-| Wall following | `Ultra_err()`, `Ultra_steer()` | Compute steering correction from the two distance sensors |
-| Drive control | `MotorB_On/Stop/Time/Degs/degree/smooth/3step/dist/...` | Run the drive motor by power, time, angle, or distance, incl. smoothed accel/decel and 3-stage speed profiles |
-| Heading control | `MotorB_Angle`, `Theta()`, `Compass()`, `ReTheta()` | Gyro (IMU)-based heading hold / turn-to-angle |
+| Wall following | `Ultra_err()` | Compute a steering correction from the two ultrasonic distance sensors |
+| Corner targeting | `Steer_err()` | Turn the line-crossing count into a target turn angle (90° every two crossings, plus a tunable per-corner cut) |
+| Heading reference | `Theta()`, `Compass()`, `ReTheta()` | Gyro (IMU)-based heading: signed heading, raw 0–360° compass, and signed error to a target heading |
+| Drive/steer profiles | `MotorB_On/Stop/Time/Degs/degree/smooth/3step/dist/...`, `MotorB_Angle` | Inherited motor-profile helpers (accel/decel smoothing, 3-stage speed profiles, gyro turn-to-angle), built around a separate `motorB`/`motorC` pair rather than the `move`/`steer` objects the run loops below actually drive — not called by either challenge's main loop in `FE_RUN.py` |
 
-> **Known issue to fix:** `Ultra_steer()` currently has a syntax gap — `90*Line_count // 2 Line_count % 2 * 45 ...` is missing an operator between `//2` and `Line_count`. Worth patching before this is treated as "final" competition code.
+> **Fixed:** the old `Ultra_steer()` syntax gap (`90*Line_count // 2 Line_count % 2 * 45 ...`, missing an operator between `//2` and `Line_count`) is resolved in the current code. The function is now `Steer_err(corner)`, reading `90*(Line_count // 2) + (Line_count % 2) * corner` ,correctly parenthesized, with `corner` passed in per call (`75` for the Open Challenge, `90` for the Obstacle Challenge) instead of a hard-coded `45`.
+
+**Key functions in `FE_RUN.py`:**
+
+| Function | Role |
+|---|---|
+| `Steer(angle)` | Steering controller (proportional + accumulated error) used in the Open Challenge |
+| `SteerObs(angle)` | Gentler, ±40°-clamped steering controller used in the Obstacle Challenge (see §4.2) |
+| `portview()` | Bench-test loop — prints battery, encoder, gyro, distance-sensor, color, and camera readings every 500 ms |
+| `main_open()` | Open Challenge entry point |
+| `main_obstacle()` | Obstacle Challenge entry point (see §4.2) |
 
 ### 5.3 Upload / Run Instructions
 
@@ -431,7 +448,9 @@ repo-root
 | Custom 3D-printed PLA parts (mounts, brackets) | Various | 3D-printed in-house |
 | LEGO Technic structural elements | Various | LEGO Technic |
 
-*(Quantities/sources for fasteners, printer filament brand, and any remaining hardware can be added once the full BOM is finalized.)*
+**Printers Used:**
+
+- [Bambu Lab P1S](https://asia.store.bambulab.com/products/p1s?p=W3sicHJvcGVydHlLZXkiOiJWYXJpYW50IiwicHJvcGVydHlWYWx1ZSI6IlAxUyBDb21ibyJ9LHsicHJvcGVydHlLZXkiOiJTaGlwIHRvIiwicHJvcGVydHlWYWx1ZSI6IiJ9LHsicHJvcGVydHlLZXkiOiJPcHRpb24iLCJwcm9wZXJ0eVZhbHVlIjoiQ29tYm8gd2l0aCBIdWIoU2hpcCBTZXBhcmF0ZWx5KSJ9XQ%3D%3D)
 
 <p align="right"><a href="#top">Back To Top</a></p>
 
@@ -451,24 +470,20 @@ We used SLDPRT to design the 3D models to finish the robot.
 
 ## 8. Building Instructions
 
-**Status: placeholder — to be completed.**
+All the code used in the robot can be found [here](src)
 
-Planned outline, ready to fill in with photos once available:
+**Step 0 - Print the 3D parts:** print all custom PLA parts listed in §7.
 
-**Step 0 — Print the 3D parts:** print all custom PLA parts listed in §7.2, using the settings from §7.3.
+**Step 1 - Assemble the steering system:** front wheel linkages → Ackermann/reverse-Ackermann linkage → mount to chassis → attach XL steering motor → secure front wheels.Using File of the Chassis can be found [here](models/Chassis_Design)
 
-**Step 1 — Assemble the steering system:** front wheel linkages → Ackermann/reverse-Ackermann linkage → mount to chassis → attach XL steering motor → secure front wheels.
+**Step 2 - Assemble the drivetrain:** rear wheel axles → differential → Large drive motor → secure to chassis → attach rear wheels.
 
-**Step 2 — Assemble the drivetrain:** rear wheel axles → differential → Large drive motor → secure to chassis → attach rear wheels.
+**Step 3 - Mount electronics:** SPIKE Prime Hub placement → M-Vision Cam mounting/aiming → Distance Sensors (left/right) → Color Sensor → route and connect all LPF2 cables per the port map in §3.4.
 
-**Step 3 — Mount electronics:** SPIKE Prime Hub placement → M-Vision Cam mounting/aiming → Distance Sensors (left/right) → Color Sensor → route and connect all LPF2 cables per the port map in §3.4.
-
-**Step 4 — Upload the software:** follow §5.3 to flash the Hub and camera, then power on and test.
-
-Send build photos or notes, and this will be turned into a numbered, judge-readable guide with images at each step.
+**Step 4 - Upload the software:** follow §5.3 to flash the Hub and camera, then power on and test.
 
 <p align="right"><a href="#top">Back To Top</a></p>
 
 ---
 
-*Sources: team README, robot configuration notes, `FE_Functions.py`, and official LEGO Education / LEGO.com technical specification pages linked above.*
+*Sources: team FAST 5, robot configuration notes, `FE_Functions.py`, and official LEGO Education / LEGO.com technical specification pages linked above.*
