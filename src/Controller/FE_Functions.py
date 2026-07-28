@@ -66,7 +66,6 @@ def Color_read():
     elif r > 1.5*g: color = 1
     return color
 
-
 def Color_line_count(color):
     global  Line_count, Line_color
     if color == -1 and Line_color != -1: 
@@ -108,51 +107,6 @@ def Ultra_err(dist):
 def Steer_err(corner):
     global  Line_count, Line_color
     temp = 90*(Line_count // 2) + (Line_count % 2) * corner
-    # print("target:", temp, "line count:", Line_count, "Line_color:", Line_color )
-    return temp
-
-steer_old  = 0
-
-def Cam_err(corner, direction):
-    global  Line_count, Line_color, steer_old 
-    cam_val = Camera.read(0)
-    color = cam_val[2]; black = cam_val[3]
-    x = cam_val[0]; y = cam_val[1]
-    u = Ultra_err(150) 
-
-    dist = 75
-    y_threshold = 65
-
-    temp = direction*(90*(Line_count // 2) + (Line_count % 2) * corner) + u
-    if abs(u) >= dist or black > 80:
-        pass
-
-    elif color == -1:
-        if steer_old != 0 and timer.time() > 400: 
-            pass
-        else: temp = steer_old
-        hub.light.on(Color.WHITE)
-
-    elif color == 0: 
-        hub.light.on(Color.RED)
-        if x > 40 and y > y_threshold and u < dist:
-            temp = temp + 60 + (x - 40)*0.5
-            steer_old = temp
-            timer.reset()
-
-    elif color == 1: 
-        hub.light.on(Color.GREEN)
-        if x < 280 and y > y_threshold and u < dist:
-            temp = temp - 60 + (x - 280)*0.5
-            steer_old = temp
-            timer.reset()
-
-    return temp
-             
-def Cam_steer():
-    global  Line_count, Line_color
-
-    temp = 90*(Line_count // 2) + (Line_count % 2) * 45 + Cam_err()
     # print("target:", temp, "line count:", Line_count, "Line_color:", Line_color )
     return temp
 
