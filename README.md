@@ -151,8 +151,7 @@ The Large Motor's torque is adequate for the flat competition surface but is a l
 **Steering geometry: Ackermann steering**
 
 We use Ackermann geometry so the two front wheels turn at different angles in a corner - the inner wheel (tracing the smaller-radius arc) turns more sharply than the outer wheel - letting both wheels roll without slipping. This is the same principle full-scale cars use for efficient, accurate turning, and it matters for us in tight obstacle-avoidance maneuvers and parking, where precision beats raw turning speed.
-
-In **v2**, the steering linkage was redesigned as a **3D-printed reverse-Ackermann assembly**, removing the original 3×3 bent perpendicular pin connector to shorten the wheelbase and reduce part count.
+![Ackermann diagram](schemes/Ackerman_diagram.png)
 
 **Wheels: 49.5 mm SPIKE wheels (front)**
 
@@ -160,13 +159,13 @@ Small diameter for agility and quick direction changes at the steered wheels.
 
 **Considerations**
 
-Even with the 3:1 gearbox, torque at the steering linkage was tighter than expected after the first v2 build - a candidate area to revisit (e.g. a different gear ratio or linkage geometry) if we find the robot under-steering at speed.
+Even with the 1:1 gearbox, torque at the steering linkage was tighter than expected after the first v2 build - a candidate area to revisit (e.g. a different gear ratio or linkage geometry) if we find the robot under-steering at speed.
 
 ### 2.3 Chassis Design
 
 **Design Overview**
 
-The chassis is built from **LEGO Technic**, supplemented with **custom 3D-printed PLA parts** wherever no suitable LEGO piece exists - most notably the Ackermann steering linkage. LEGO was our starting material because the team (particularly Lam) has multiple prior seasons of hands-on build experience with it; 3D printing filled the remaining gaps and gave us full freedom over part geometry.
+The chassis is built from **LEGO Technic**, supplemented with **custom 3D-printed PLA parts** wherever no suitable LEGO piece exists - most notably the Ultrasonic sensor Adapter. LEGO was our starting material because the team (particularly Trung) has multiple prior seasons of hands-on build experience with it; 3D printing filled the remaining gaps and gave us full freedom over part geometry.
 
 **v1 → v2 changes**
 
@@ -199,7 +198,7 @@ The chassis is built from **LEGO Technic**, supplemented with **custom 3D-printe
   </tr>
 </table>
 
-The battery powers the SPIKE Prime Hub directly; the Hub in turn supplies all motors and sensors over their LPF2 leads, and the M-Vision Cam over its dedicated 5V cable — no separate step-up/step-down conversion is needed anywhere in the system, since the camera's 5V input matches the Hub's output.
+The battery powers the SPIKE Prime Hub directly; the Hub in turn supplies all motors and sensors over their LPF2 leads, and the M-Vision Cam over its dedicated 5V cable - no separate step-up/step-down conversion is needed anywhere in the system, since the camera's 5V input matches the Hub's output.
 
 Our firmware reads `hub.battery.voltage()`, clamps it to the 6,900–8,300 mV working range, and converts it to a 0–100% estimate so we can catch a low-charge robot before a run.
 
@@ -247,7 +246,7 @@ Because everything runs off one Hub battery with no separate motor supply, our p
   </tr>
 </table>
 
-**Tasks:** one sensor on each side reads distance to the left/right walls. At the start of a run this tells the robot whether the course is Clockwise or Counterclockwise (by checking which side has a wall); during a run it feeds `Ultra_err()`/`Ultra_steer()` to hold a consistent stand-off from the wall and correct heading error.
+**Tasks:** one sensor on each side reads distance to the left/right walls. At the start of a run, this tells the robot whether the course is Clockwise or Counterclockwise (by checking which side has a wall); during a run, it feeds `Ultra_err()`/`Ultra_steer()` to hold a consistent stand-off from the wall and correct heading error.
 
 **Ground sensing: LEGO® Technic™ Color Sensor**
 
@@ -295,7 +294,15 @@ Everything connects to the Hub over standard LEGO LPF2 cables — no custom wiri
 
 ### 3.5 Power Consumption
 
-*Placeholder — to be measured.* Unlike a multi-board system (separate SBC, motor driver, step-up converter, etc.), our whole robot draws from a single SPIKE Prime Hub battery, so a full per-component current/power breakdown isn't published by LEGO for the exact motor/sensor combination we use. Once we bench-test with a USB power meter or multimeter, this table will list typical/peak current and power per component (Hub, Large Motor, XL Motor, Distance Sensors ×2, Color Sensor, M-Vision Cam) the same way §3.5 in a full BOM-level writeup should.
+All components are powered from the SPIKE Prime Hub's own 7.3 V Li-Ion battery.
+
+| Component | Voltage | Current (typical) | Current (peak) | Power (typical) |
+|---|---|---|---|---|
+| SPIKE Prime Hub | 7.2 V | 1.0 A | 1.5 A | 7.2 W |
+| M-Vision Camera | 5 V (Type-C) | 0.15 A | 0.3 A | 0.75 W |
+| Ultrasonic ×2 | 5 V (from hub) | 0.04 A | 0.06 A | 0.2 W |
+| Drive motors ×2 | 7.2 V | 1.0 A | 2.0 A | 7.2 W |
+| **Total** | | **2.19 A** | **3.86 A** | **15.35 W** |
 
 <p align="right"><a href="#top">Back To Top</a></p>
 
@@ -305,13 +312,13 @@ Everything connects to the Hub over standard LEGO LPF2 cables — no custom wiri
 
 The competition has two runs:
 - **Open Challenge:** three laps around a randomly-sized field, in a randomly-chosen direction, without touching a wall.
-- **Obstacle Challenge:** three laps while reading traffic signs — pass a red sign on its right, a green sign on its left — then parallel-park in a marked bay.
+- **Obstacle Challenge:** three laps while reading traffic signs - pass a red sign on its right, a green sign on its left - then parallel-park in a marked bay.
 
 We split our strategy into the same three phases:
 
 ### 4.1 Open Challenge
 
-Two boxes are drawn on the left and right of the camera frame. Pixels within a tuned RGB threshold count as "black," and the robot centers itself on the track by comparing the black-fill ratio of the two boxes, correcting with **PID** steering. A box at the center of the frame watches for the orange/blue start-line color; whichever color it sees first tells the robot whether the course is Clockwise or Counterclockwise. Two small boxes at the bottom of the frame catch the case where the robot gets close enough to a wall that the main boxes lose the line, switching to a "priority correction" mode driven by those bottom boxes instead — this stops the robot from hugging the wall or losing track when the front sensors go unreliable. A tunable default wall-hugging offset (e.g. +30°) keeps the robot tracking tightly and minimizes lap time.
+Two boxes are drawn on the left and right of the camera frame. Pixels within a tuned RGB threshold count as "black," and the robot centers itself on the track by comparing the black-fill ratio of the two boxes, correcting with **PID** steering. A box at the center of the frame watches for the orange/blue start-line color; whichever color it sees first tells the robot whether the course is Clockwise or Counterclockwise. Two small boxes at the bottom of the frame catch the case where the robot gets close enough to a wall that the main boxes lose the line, switching to a "priority correction" mode driven by those bottom boxes instead - this stops the robot from hugging the wall or losing track when the front sensors go unreliable. A tunable default wall-hugging offset (e.g. +30°) keeps the robot tracking tightly and minimizes lap time.
 
 <details>
 <summary><b>Click here to show Open Challenge code excerpt</b></summary>
@@ -355,7 +362,7 @@ while abs(Drive.angle()) < 2000:
 
 ### 4.3 Parallel Parking
 
-After completing 3 laps, the robot aligns to the wall using the same wall-following method as above, then drives until the magenta parking-lot color crosses a specific X-coordinate in the camera frame. From that trigger point, a **pre-programmed, encoder-based maneuver sequence** completes the park — deliberately not a fully vision-guided park, since the travel distance involved is short enough that encoder error stays within an acceptable margin, and it avoids depending on vision precision we haven't yet fully validated for this sub-task.
+After completing 3 laps, the robot aligns to the wall using the same wall-following method as above, then drives until the magenta parking-lot color crosses a specific X-coordinate in the camera frame. From that trigger point, a **pre-programmed, encoder-based maneuver sequence** completes the park - deliberately not a fully vision-guided park, since the travel distance involved is short enough that encoder error stays within an acceptable margin, and it avoids depending on vision precision we haven't yet fully validated for this sub-task.
 
 <p align="right"><a href="#top">Back To Top</a></p>
 
@@ -373,12 +380,14 @@ After completing 3 laps, the robot aligns to the wall using the same wall-follow
 
 ```txt
 repo-root
-├─ Chassis, Motor and Processing Unit/   → hardware diagrams & images
-├─ Programming/                          → programs + illustrations
-│  ├─ FE_Functions.py                    → hub setup, motor/sensor helper functions
-│  └─ MXLineT_Lib/                       → camera / line-tracker interface (OpenMV side)
-├─ Robot/                                → robot photos (v1 & v2, all views)
-└─ Team/                                 → team photos
+└─ src
+   ├─ Camera
+   │  ├─ LPF2.py            # External library (depends on libcamera)
+   │  ├─ main.py
+   ├─ Controller       
+   │  ├─ FE_Functions.py 
+   │  ├─ FE_Portview.py               
+   │  ├─ FE_RUN.py          # Executable for both open and obstacle challenges         
 ```
 
 **Key function groups in `FE_Functions.py`:**
@@ -428,9 +437,13 @@ repo-root
 
 ---
 
-## 7. 3D Model Files
+## 7. 3D Model Files (SLDPRT)
 
-**Status: placeholder — to be completed.**
+We used SLDPRT to design the 3D models to finish the robot.
+
+- [**Ultrasonic sensor adapter**](Ultra_adapter.SLDPRT) 
+- [**Cam Holder**](cam_holder.SLDPRT)
+
 
 <p align="right"><a href="#top">Back To Top</a></p>
 
@@ -452,7 +465,7 @@ Planned outline, ready to fill in with photos once available:
 
 **Step 4 — Upload the software:** follow §5.3 to flash the Hub and camera, then power on and test.
 
-Send build photos or notes and this will be turned into a numbered, judge-readable guide with images at each step.
+Send build photos or notes, and this will be turned into a numbered, judge-readable guide with images at each step.
 
 <p align="right"><a href="#top">Back To Top</a></p>
 
