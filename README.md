@@ -55,7 +55,7 @@ This is the first year our team has competed in this category, so a large part o
 
 Our robot is built on a **custom LEGO Technic + 3D-printed (PLA) chassis**, in a **rear-wheel differential-drive, Ackermann front-steer** configuration, controlled by a **LEGO® Education SPIKE™ Prime Hub** and a **Matrix Robotics M-Vision Cam** for onboard image processing. Design priorities, in order, were: a low center of gravity for stability, a lightweight structure to reduce motor strain, and a minimal footprint for maneuverability.
 
-The current build is our **second full revision (v2)** — see §2.3 for what changed from v1 and why.
+The current build is our **second full revision (v2)** - see §2.3 for what changed from v1 and why.
 
 ### 1.2 Robot Images
 
@@ -113,7 +113,7 @@ The current build is our **second full revision (v2)** — see §2.3 for what ch
 
 **Differential Gear**
 
-A LEGO differential sits between the two rear wheels, letting them spin at different speeds through a turn — the inner wheel travels a smaller-radius arc than the outer wheel, so without a differential one wheel would have to scrub/slip. This keeps cornering smooth and reduces wheel wear and drift, particularly during tight turns in the Obstacle Challenge and during parking.
+A LEGO differential sits between the two rear wheels, letting them spin at different speeds through a turn - the inner wheel travels a smaller-radius arc than the outer wheel, so without a differential one wheel would have to scrub/slip. This keeps cornering smooth and reduces wheel wear and drift, particularly during tight turns in the Obstacle Challenge and during parking.
 
 **Wheels: 62.3 mm Technic tires (rear)**
 
@@ -121,7 +121,7 @@ Wide, large-diameter tires were chosen for the rear (driven) wheels to maximize 
 
 **Considerations**
 
-The Large Motor's torque is adequate for the flat competition surface but is a limiting factor for future speed increases — a heavier gear-down or a higher-torque motor is a candidate upgrade if we push for faster lap times.
+The Large Motor's torque is adequate for the flat competition surface but is a limiting factor for future speed increases - a heavier gear-down or a higher-torque motor is a candidate upgrade if we push for faster lap times.
 
 ### 2.2 Steering
 
@@ -238,7 +238,7 @@ Because everything runs off one Hub battery with no separate motor supply, our p
       <h4>Specifications (manufacturer)</h4>
       <ul>
         <li>Sensing technology: ultrasonic</li>
-        <li>Range: 50–2,000 mm (fast-sensing mode: 50–300 mm)</li>
+        <li>Range: 50-2,000 mm (fast-sensing mode: 50–300 mm)</li>
         <li>Accuracy: ±1 cm</li>
         <li>Extras: 4-segment programmable LED "eyes"; detachable LPF2 breakout on the rear</li>
       </ul>
@@ -277,11 +277,11 @@ Because everything runs off one Hub battery with no separate motor supply, our p
 
 **Reason for Selection**
 
-We chose SPIKE Prime over EV3 even though its CPU clock speed is lower, because it's roughly half the weight and less than half the volume of the EV3 Hub — both of which matter more for our low-CG, lightweight design goals than raw clock speed, given that the M-Vision Cam (not the Hub) does the heavy image-processing work.
+We chose SPIKE Prime over EV3 even though its CPU clock speed is lower, because it's roughly half the weight and less than half the volume of the EV3 Hub - both of which matter more for our low-CG, lightweight design goals than raw clock speed, given that the M-Vision Cam (not the Hub) does the heavy image-processing work.
 
 ### 3.4 Port / Wiring Map
 
-Everything connects to the Hub over standard LEGO LPF2 cables — no custom wiring harness or PCB is needed. Current assignments (from `FE_Functions.py`):
+Everything connects to the Hub over standard LEGO LPF2 cables - no custom wiring harness or PCB is needed. Current assignments (from `FE_Functions.py`):
 
 | Hub Port | Device | Role |
 |---|---|---|
@@ -415,10 +415,10 @@ repo-root
 | Function | Role |
 |---|---|
 | `Steer(angle)` | Steering controller (proportional + accumulated error) used in the Open Challenge |
-| `SteerObs(angle)` | Gentler, ±40°-clamped steering controller used in the Obstacle Challenge (see §4.2) |
+| `SteerObs(angle)` | Gentler, ±40°-clamped steering controller used in the Obstacle Challenge (see 4.2) |
 | `portview()` | Bench-test loop — prints battery, encoder, gyro, distance-sensor, color, and camera readings every 500 ms |
 | `main_open()` | Open Challenge entry point |
-| `main_obstacle()` | Obstacle Challenge entry point (see §4.2) |
+| `main_obstacle()` | Obstacle Challenge entry point (see 4.2) |
 
 ### 5.3 Upload / Run Instructions
 
