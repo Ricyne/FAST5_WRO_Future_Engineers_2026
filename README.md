@@ -11,7 +11,7 @@ Fast 5 is a team of two students from Kid Engineer Organization, also known as T
 ## Team Members
 | Photo | Member | Role |
 |---|---|---|
-| ![Luu Duc Trung](t-photos/Luu_Duc_Trung_photo.jpg) | **Luu Duc Trung** |  Lead mechanical builder - brings prior WRO experience (WRO 2024, 2025) and designed/assembled the robot |
+| ![Luu Duc Trung](t-photos/Luu_Duc_Trung_photo.jpg) | **Luu Duc Trung** |  Lead mechanical builder - brings prior WRO experience (WRO 2018, 2021, 2023, 2024, 2025) and designed/assembled the robot |
 | ![Truong Dinh Bach](t-photos/Truong_Dinh_Bach_photo.jpg) | **Truong Dinh Bach** |  Responsible for documenting the team's development process and photography |
 
 <a name="top"></a>
