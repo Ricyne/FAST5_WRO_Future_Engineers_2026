@@ -45,17 +45,17 @@ def Steer(angle):
     global ep, es
     error = angle - steer.angle()
     es = error + es
-    controller = error*5 + es*0.1 
+    controller = error* + es*0.1 
     steer.dc(controller)
     ep = error
     wait(10)
 
 def SteerObs(angle):
     global ep, es 
-    error = angle - NumberLimit_Clamp(steer.angle(), -40, 40)
+    error = angle - NumberLimit_Clamp(steer.angle(), -90, 90)
     if abs(error) < 2.5: es = 0
     else: es = error + es
-    controller = error*2# + (error - ep)*2 # + es* 0.01
+    controller = error*3# + (error - ep)*2 # + es* 0.01
     steer.dc(controller)
     ep = error
     #print("error:", error, "ep:", ep, "es:", es, "controller:", controller)
@@ -71,7 +71,7 @@ def main_open():
         Line_count = Color_line_count(color)
         if direction == 0:
             direction = color
-        angle = ReTheta(Ultra_err(200)+ Steer_err(75)*direction)
+        angle = ReTheta(Ultra_err(170)+ Steer_err(65)*direction)
         if abs(angle) < 20: 
             pwr = 100
         else: 
@@ -85,11 +85,11 @@ def main_open():
         Line_count = Color_line_count(color)
         if direction == 0:
             direction = color
-        angle = ReTheta(Ultra_err(200)+ Steer_err(75)*direction)
+        angle = ReTheta(Ultra_err(180)+ Steer_err(60)*direction)
         if abs(angle) < 20: 
             pwr = 100
         else: 
-            pwr = 50
+            pwr = 70
         # Move(pwr)
         Steer(angle)
 
@@ -105,14 +105,12 @@ def main_obstacle():
     temp = 0
     count = 0
     direction = 0
-    Line_count = 0
-    timer = StopWatch()
-    timer.reset()
+    Line_count = 0  
     #state: 
     #1- No block, run normally(open round) until robot detects a block;  
     #2- See red/green block and run straight to it (abs(x-160)<=5) until y > 90
     #3- go to (offset angle +- 30) deg for 170 degs or black > 60.
-    while Line_count < 24:
+    while Line_count < 25:
 
         color = Color_read()
         Line_count = Color_line_count(color)
@@ -121,36 +119,43 @@ def main_obstacle():
         if direction == 0:
             direction = color
 
-        angle = Ultra_err(200)+ Steer_err(90)*direction - 90
+        angle = Ultra_err(150)+ Steer_err(90)*direction 
 
         if state == 1:
             if block != -1: state = 2
             else: temp = angle
 
         elif state == 2:
-            if y >=100: state = 3; move.reset_angle(0)
+            if y >90: state = 3; move.reset_angle(0)
             elif x == 0: angle = temp
-            elif abs(x - 160) > 2.5:
-                angle = angle + (x-160)*0.5; temp = angle
+            elif abs(x - 160) > 3.5:
+                angle = angle + (x-160)*0.4; temp = angle
             else: 
                 temp = angle
 
         elif state == 3:
-            if black > 60: state = 4; move.reset_angle(0)
-            elif abs(move.angle()) > 250: state = 1
-            elif block == 0: angle = NumberLimit_Clamp(temp + 60, angle - 85, angle + 85)
-            else: angle = NumberLimit_Clamp(temp - 60, angle - 85, angle + 85)
+            if black > 65: state = 4; move.reset_angle(0)
+            elif abs(move.angle()) > 255: state = 1
+            elif block == 0: angle = NumberLimit_Clamp(temp + 100, angle - 90, angle + 90)
+            else: angle = NumberLimit_Clamp(temp - 60, angle - 90, angle + 90)
 
         elif state == 4:
-            if black > 70 or abs(move.angle()) >= 200: state = 1
-        print(angle,"//", block, "//", state)
+            if black > 60 or abs(move.angle()) >= 255: state = 1
+        print(angle,"//", block, "//", Line_count)
         
-        target = NumberLimit_Clamp(ReTheta(angle), -40, 40)
+        
+        if block == -1: 
+            hub.light.on(Color(h=120, s=100, v=100))
+        elif block == 0: 
+            hub.light.on(Color(h=0, s=100, v=100))
+        else: 
+            hub.light.off()
+        target = NumberLimit_Clamp(ReTheta(angle), -75, 75)
         # print("line_count:", Line_count, "//dir:",direction,"//ultra:", Ultra_err(200),"//steer:",Steer_err(90), "angle:",angle, "//state:", state, "//color:", block )   
         # print("val:", val, "retheta:", ReTheta(angle), "steer:", steer.angle(), "move:", move.angle())
         # wait(200)
         # print("\x1b[H\x1b[2J",end="")
-        pwr = 50 if abs(target) < 20 else 30
+        pwr = 75 if abs(target) < 20 else 70
         Move(pwr)
         SteerObs(target)
         
